@@ -1,0 +1,27 @@
+{
+  "name": "stream-notify-bot",
+  "version": "1.0.0",
+  "description": "telegram bot + twitch api",
+  "homepage": "https://github.com/winterly4/stream-notify-bot#readme",
+  "bugs": {
+    "url": "https://github.com/winterly4/stream-notify-bot/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winterly4/stream-notify-bot.git"
+  },
+  "license": "ISC",
+  "author": "winterly4",
+  "main": "app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "envfile": "^7.1.0",
+    "node-cron": "^3.0.3",
+    "node-telegram-bot-api": "0.66.0",
+    "node-fetch": "3.3.2"
+  }
+}
