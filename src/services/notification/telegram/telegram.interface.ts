@@ -1,3 +1,3 @@
-interface ITwitchService {
+interface ITelegramService {
   sendNotification(message: string);
 }

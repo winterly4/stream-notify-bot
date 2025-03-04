@@ -1,8 +1,5 @@
-interface IStorage {
-  save(key: string, data: any): Promise<void>;
-  load(channel: string): Promise<StreamState | null>;
-}
-// export type StreamState = "live" | "offline";
+import fs from "fs/promises";
+import path from "path";
 
 export type StreamState = {
   channel: string;
@@ -10,28 +7,59 @@ export type StreamState = {
   date: Date | null;
 };
 
-export class StreamStateManager {
-  constructor(private storage: IStorage, private channel: string) {}
-
-  async updateState(state: StreamState): Promise<void> {
-    await this.storage.save(this.channel, state);
-  }
-
-  async getLastState(): Promise<StreamState | null> {
-    return this.storage.load(this.channel);
-  }
+export interface IStorage {
+  save(key: string, data: any): Promise<void>;
+  load(channel: string): Promise<StreamState | null>;
 }
 
-// Реализация для файлового хранилища
-export class FileStorage implements IStorage {
-  async save(key: string, data: any): Promise<void> {
-    // Реализация записи в файл
+export class StorageSercive implements IStorage {
+  private readonly filePath: string;
+
+  constructor(fileName: string = "stream_state.json") {
+    this.filePath = path.resolve(process.cwd(), fileName);
   }
+
+  async save(key: string, data: StreamState): Promise<void> {
+    try {
+      let currentData: Record<string, StreamState> = {};
+      try {
+        const fileContent = await fs.readFile(this.filePath, "utf-8");
+        currentData = JSON.parse(fileContent);
+      } catch (error) {
+        if (error.code === "ENOENT") {
+          console.log("Файл не найден, создаём новый...");
+        } else {
+          throw error;
+        }
+      }
+
+      currentData[key] = data;
+
+      await fs.writeFile(
+        this.filePath,
+        JSON.stringify(currentData, null, 2),
+        "utf-8"
+      );
+      console.log(`Состояние для канала ${key} успешно сохранено.`);
+    } catch (error) {
+      console.error("Ошибка при сохранении состояния:", error);
+      throw error;
+    }
+  }
+
   async load(channel: string): Promise<StreamState | null> {
-    return {
-      channel: "relka_art",
-      status: "Live",
-      date: null,
-    };
+    try {
+      const fileContent = await fs.readFile(this.filePath, "utf-8");
+      const data: Record<string, StreamState> = JSON.parse(fileContent);
+
+      return data[channel] || null;
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        console.log("Файл не найден, возвращаем null.");
+        return null;
+      }
+      console.error("Ошибка при загрузке состояния:", error);
+      throw error;
+    }
   }
 }

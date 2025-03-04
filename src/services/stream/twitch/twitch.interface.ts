@@ -25,5 +25,5 @@ interface StreamsUserResponse {
 
 interface ITwitchService {
   getStreamInfoByLogin(channel: string): Promise<StreamsUserResponse | null>;
-  getStreamLiveChannel() Promise<StreamsUserResponse | null>;
+  getStreamLiveChannel(): Promise<StreamsUserResponse | null>;
 }
