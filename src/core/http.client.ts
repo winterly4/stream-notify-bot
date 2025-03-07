@@ -66,7 +66,7 @@ export class HttpClient {
         return response.json();
       },
       {
-        retries: 3,
+        retries: 5,
         onRetry: (error) => {
           this.logger.log(`Retrying request`, {
             error: error.message,

@@ -8,7 +8,7 @@ async function bootstrap() {
   const scheduler = container.get(Scheduler);
   const monitor = container.get(StreamMonitorTask);
 
-  scheduler.schedule(() => monitor.execute("realsheeshed"), "* * * * *");
+  scheduler.schedule(() => monitor.execute("lerusia_"), "* * * * *");
 
   process.on("SIGINT", () => {
     scheduler.shutdown();

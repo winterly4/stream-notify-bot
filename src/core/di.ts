@@ -1,7 +1,6 @@
 import { Container } from "inversify";
 import { Logger } from "./logger";
 import { HttpClient } from "./http.client";
-import TelegramBot from "node-telegram-bot-api";
 import { Scheduler } from "./sheduler";
 import { TwitchService } from "../modules/stream/twitch/twitch.service";
 import { TelegramService } from "../modules/telegram/telegram.service";
@@ -14,7 +13,6 @@ const container = new Container();
 
 container.bind(Logger).toSelf().inSingletonScope();
 container.bind(HttpClient).toSelf().inSingletonScope();
-// container.bind(TelegramBot).toSelf().inSingletonScope();
 container.bind(Storage).toSelf().inSingletonScope();
 container.bind(Scheduler).toSelf().inSingletonScope();
 container.bind(TwitchService).toSelf().inSingletonScope();

@@ -18,10 +18,22 @@ export class StreamMonitorTask {
       // const status = this.storage.load(channel);
       // const {} = status;
 
-      const data = await this.twitchService.getStreamInfoByChannel(channel);
+      const result = await this.twitchService.getStreamInfoByChannel(channel);
 
-      if (data?.data?.length > 0) {
-        this.telegramService.sendNotification("message");
+      if (result.data && result.data.length > 0) {
+        const streamInfo = result.data[0];
+
+        const message =
+          `🔥 Стрим уже начался!\n` +
+          `🎯 Тема: ${streamInfo.title}\n` +
+          `🎮 Играем в ${streamInfo.game_name}\n` +
+          `________________________________\n` +
+          `Где смотреть:\n` +
+          `[Twitch](https://twitch.tv/relka_art) ` +
+          `[VK Play](https://live.vkvideo.ru/relka_art) ` +
+          `[Trovo](https://trovo.live/s/relka_art)`;
+
+        this.telegramService.sendNotification(message);
 
         await this.storage.save(channel, {
           status: "Live",
