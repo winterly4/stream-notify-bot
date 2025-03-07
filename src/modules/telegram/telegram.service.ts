@@ -6,6 +6,8 @@ interface ITelegramService {
 
 @injectable()
 export class TelegramService implements ITelegramService {
+  constructor() {}
+
   sendNotification(message: string) {
     console.log("сообщение в тг отправлено");
   }

@@ -1,4 +1,5 @@
 import { inject, injectable } from "inversify";
+import { Storage } from "../../core/storage";
 
 @injectable()
 export class StorageService {

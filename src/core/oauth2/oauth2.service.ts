@@ -11,9 +11,9 @@ export class OAuth2Service implements IOAuth2Service {
   private accessToken: string;
 
   constructor(
-    private clientId: string,
-    private clientSecret: string,
-    private accessTokenURL: string
+    private clientId: string = config.twitch.clientId,
+    private clientSecret: string = config.twitch.clientSecret,
+    private accessTokenURL: string = config.twitch.accessToken
   ) {}
 
   getAccessToken() {

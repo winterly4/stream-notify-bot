@@ -12,7 +12,6 @@ export const config = {
     clientId: process.env.TWITCH_CLIENT_ID,
     clientSecret: process.env.TWITCH_CLIENT_SECRET,
     apiUrl: process.env.TWITCH_API_URL,
-    tokenUrl: process.env.TWITCH_TOKEN_URL,
     accessToken: process.env.TWITCH_ACCESS_TOKEN,
   },
   telegram: {
@@ -24,8 +23,6 @@ export const config = {
 const requiredEnvVars = [
   "TWITCH_CLIENT_ID",
   "TWITCH_CLIENT_SECRET",
-  "TWITCH_API_URL",
-  "TWITCH_TOKEN_URL",
   "TELEGRAM_BOT_TOKEN",
   "TELEGRAM_CHAT_ID",
 ];
