@@ -1,17 +1,32 @@
+import { injectable } from "inversify";
+import { config } from "../config";
+
 export interface IOAuth2Service {
-  getAccessToken(): Promise<string>;
-  refreshToken(): Promise<void>;
+  getAccessToken(): string;
+  refreshToken();
 }
 
-export class OAuth2Service {
+@injectable()
+export class OAuth2Service implements IOAuth2Service {
+  private accessToken: string;
+
   constructor(
     private clientId: string,
     private clientSecret: string,
     private accessTokenURL: string
   ) {}
 
-  async getToken() {
-    return;
+  getAccessToken() {
+    if (config.twitch.accessToken === undefined) {
+      this.refreshToken();
+    } else {
+      this.accessToken = config.twitch.accessToken;
+    }
+
+    return this.accessToken;
+  }
+
+  async refreshToken() {
     const params = new URLSearchParams({
       client_id: this.clientId,
       client_secret: this.clientSecret,
@@ -30,7 +45,7 @@ export class OAuth2Service {
       const data = await response.json();
 
       if (data !== null) {
-        return data.access_token;
+        this.accessToken = data.access_token;
       }
     } catch (error) {
       console.error("Ошибка при получении токена", error);

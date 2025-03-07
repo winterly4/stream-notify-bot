@@ -13,6 +13,7 @@ export const config = {
     clientSecret: process.env.TWITCH_CLIENT_SECRET,
     apiUrl: process.env.TWITCH_API_URL,
     tokenUrl: process.env.TWITCH_TOKEN_URL,
+    accessToken: process.env.TWITCH_ACCESS_TOKEN,
   },
   telegram: {
     botToken: process.env.TELEGRAM_BOT_TOKEN,

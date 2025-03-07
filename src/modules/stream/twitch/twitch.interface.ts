@@ -16,14 +16,14 @@ interface StreamInfo {
   is_mature: boolean;
 }
 
-interface StreamsUserResponse {
+export interface StreamsUserResponse {
   data: StreamInfo[];
   pagination: {
     cursor?: string;
   };
 }
 
-interface ITwitchService {
-  getStreamInfoByLogin(channel: string): Promise<StreamsUserResponse | null>;
+export interface ITwitchService {
+  getStreamInfoByChannel(channel: string): Promise<StreamsUserResponse | null>;
   getStreamLiveChannel(): Promise<StreamsUserResponse | null>;
 }

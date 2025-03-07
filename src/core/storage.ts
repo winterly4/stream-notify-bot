@@ -1,10 +1,11 @@
 import fs from "fs/promises";
+import { injectable } from "inversify";
 import path from "path";
 
 export type StreamState = {
-  channel: string;
   status: "Live" | "Offline";
-  date: Date | null;
+  tgNotify: true | false;
+  lastChecked: Date | null;
 };
 
 export interface IStorage {
@@ -12,7 +13,8 @@ export interface IStorage {
   load(channel: string): Promise<StreamState | null>;
 }
 
-export class StorageSercive implements IStorage {
+@injectable()
+export class Storage implements IStorage {
   private readonly filePath: string;
 
   constructor(fileName: string = "stream_state.json") {
@@ -56,7 +58,6 @@ export class StorageSercive implements IStorage {
     } catch (error) {
       if (error.code === "ENOENT") {
         console.log("Файл не найден, возвращаем null.");
-        return null;
       }
       console.error("Ошибка при загрузке состояния:", error);
       throw error;
