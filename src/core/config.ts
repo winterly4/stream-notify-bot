@@ -13,10 +13,14 @@ export const config = {
     clientSecret: process.env.TWITCH_CLIENT_SECRET,
     apiUrl: process.env.TWITCH_API_URL,
     accessToken: process.env.TWITCH_ACCESS_TOKEN,
+    channel: process.env.TWITCH_STREAMS_CHANNEL,
   },
   telegram: {
     botToken: process.env.TELEGRAM_BOT_TOKEN,
     chatId: process.env.TELEGRAM_CHAT_ID,
+  },
+  app: {
+    streamDelay: parseInt(process.env.STREAM_DELAY) * 60 * 60 * 1000,
   },
 };
 

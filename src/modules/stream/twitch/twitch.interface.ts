@@ -1,4 +1,4 @@
-interface StreamInfo {
+export interface StreamInfo {
   id: string;
   user_id: string;
   user_login: string;

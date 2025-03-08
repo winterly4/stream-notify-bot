@@ -2,28 +2,17 @@ import fs from "fs/promises";
 import { injectable } from "inversify";
 import path from "path";
 
-export type StreamState = {
-  status: "Live" | "Offline";
-  tgNotify: true | false;
-  lastChecked: Date | null;
-};
-
-export interface IStorage {
-  save(key: string, data: any): Promise<void>;
-  load(channel: string): Promise<StreamState | null>;
-}
-
 @injectable()
-export class Storage implements IStorage {
+export class Storage<T = any> {
   private readonly filePath: string;
 
   constructor(fileName: string = "stream_state.json") {
     this.filePath = path.resolve(process.cwd(), fileName);
   }
 
-  async save(key: string, data: StreamState): Promise<void> {
+  async save(key: string, data: T): Promise<void> {
     try {
-      let currentData: Record<string, StreamState> = {};
+      let currentData: Record<string, T> = {};
       try {
         const fileContent = await fs.readFile(this.filePath, "utf-8");
         currentData = JSON.parse(fileContent);
@@ -49,12 +38,12 @@ export class Storage implements IStorage {
     }
   }
 
-  async load(channel: string): Promise<StreamState | null> {
+  async load(key: string): Promise<T | null> {
     try {
       const fileContent = await fs.readFile(this.filePath, "utf-8");
-      const data: Record<string, StreamState> = JSON.parse(fileContent);
+      const data: Record<string, T> = JSON.parse(fileContent);
 
-      return data[channel] || null;
+      return data[key] || null;
     } catch (error) {
       if (error.code === "ENOENT") {
         console.log("Файл не найден, возвращаем null.");

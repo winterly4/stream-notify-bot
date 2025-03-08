@@ -1,14 +1,18 @@
 import "reflect-metadata";
 import { container } from "./src/core/di";
 import { Scheduler } from "./src/core/sheduler";
-import { StreamMonitorTask } from "./src/modules/stream/streamMonitor";
+import { StreamMonitor } from "./src/modules/stream/streamMonitor";
 import { Logger } from "./src/core/logger";
+import { config } from "./src/core/config";
 
 async function bootstrap() {
   const scheduler = container.get(Scheduler);
-  const monitor = container.get(StreamMonitorTask);
+  const monitor = container.get(StreamMonitor);
 
-  scheduler.schedule(() => monitor.execute("lerusia_"), "* * * * *");
+  scheduler.schedule(
+    () => monitor.execute(config.twitch.channel),
+    "* * * * * *"
+  );
 
   process.on("SIGINT", () => {
     scheduler.shutdown();

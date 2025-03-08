@@ -3,26 +3,29 @@ import TelegramBot from "node-telegram-bot-api";
 import { config } from "../../core/config";
 import retry from "async-retry";
 import { Logger } from "../../core/logger";
-
-interface ITelegramService {
-  sendNotification(message: string);
-}
+import { StreamInfo } from "../stream/twitch/twitch.interface";
 
 @injectable()
-export class TelegramService implements ITelegramService {
+export class TelegramService {
   private bot: TelegramBot;
+  private message: string = null;
 
   constructor(@inject(Logger) private logger: Logger) {
     this.bot = new TelegramBot(config.telegram.botToken, { polling: false });
   }
 
-  async sendNotification(message: string): Promise<void> {
+  async sendNotification(): Promise<void> {
+    if (!this.message) {
+      throw new Error(
+        "Сообщение не было создано. Сначала вызовите createStreamMessage."
+      );
+    }
     await retry(
       async (bail) => {
         try {
           const sentMessage = await this.bot.sendMessage(
             config.telegram.chatId,
-            message,
+            this.message,
             { parse_mode: "Markdown", disable_web_page_preview: true }
           );
           this.logger.log(
@@ -46,5 +49,18 @@ export class TelegramService implements ITelegramService {
         maxTimeout: 5000,
       }
     );
+  }
+
+  public createStreamMessage(streamInfo: StreamInfo): this {
+    this.message =
+      `🔥 Стрим уже начался!\n` +
+      `🎯 Тема: ${streamInfo.title}\n` +
+      `🎮 Играем в ${streamInfo.game_name}\n` +
+      `________________________________\n` +
+      `Где смотреть:\n` +
+      `[Twitch](https://twitch.tv/relka_art) ` +
+      `[VK Play](https://live.vkvideo.ru/relka_art) ` +
+      `[Trovo](https://trovo.live/s/relka_art)`;
+    return this;
   }
 }

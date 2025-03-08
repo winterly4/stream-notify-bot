@@ -1,28 +1,23 @@
 import { injectable } from "inversify";
-import { config } from "../config";
-
-export interface IOAuth2Service {
-  getAccessToken(): string;
-  refreshToken();
-}
+import { config } from "./config";
 
 @injectable()
-export class OAuth2Service implements IOAuth2Service {
+export class OAuth2 {
   private accessToken: string;
 
   constructor(
     private clientId: string = config.twitch.clientId,
     private clientSecret: string = config.twitch.clientSecret,
     private accessTokenURL: string = config.twitch.accessToken
-  ) {}
-
-  getAccessToken() {
+  ) {
     if (config.twitch.accessToken === undefined) {
       this.refreshToken();
     } else {
       this.accessToken = config.twitch.accessToken;
     }
+  }
 
+  getAccessToken() {
     return this.accessToken;
   }
 

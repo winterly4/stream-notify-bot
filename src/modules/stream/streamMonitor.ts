@@ -1,48 +1,54 @@
 import { injectable, inject } from "inversify";
 import { Logger } from "../../core/logger";
 import { TwitchService } from "./twitch/twitch.service";
-import { Storage } from "../../core/storage";
 import { TelegramService } from "../telegram/telegram.service";
+import { StorageService } from "../storage/storage.service";
+import { config } from "../../core/config";
+import { StreamsUserResponse } from "./twitch/twitch.interface";
 
 @injectable()
-export class StreamMonitorTask {
+export class StreamMonitor {
   constructor(
     @inject(Logger) private logger: Logger,
     @inject(TwitchService) private twitchService: TwitchService,
-    @inject(Storage) private storage: Storage,
+    @inject(StorageService) private storageService: StorageService,
     @inject(TelegramService) private telegramService: TelegramService
   ) {}
 
   async execute(channel: string) {
+    this.storageService.setChannel(channel);
     try {
-      // const status = this.storage.load(channel);
-      // const {} = status;
+      const lastDate = await this.storageService.getLastDate();
 
-      const result = await this.twitchService.getStreamInfoByChannel(channel);
+      if (Date.now() - lastDate.lastChecked < config.app.streamDelay) {
+        return;
+      }
+
+      let result: StreamsUserResponse;
+
+      try {
+        result = await this.twitchService.getStreamInfoByChannel(channel);
+      } catch (error) {
+        this.logger.error("Failed to fetch stream info from Twitch", error);
+        return;
+      }
 
       if (result.data && result.data.length > 0) {
         const streamInfo = result.data[0];
 
-        const message =
-          `🔥 Стрим уже начался!\n` +
-          `🎯 Тема: ${streamInfo.title}\n` +
-          `🎮 Играем в ${streamInfo.game_name}\n` +
-          `________________________________\n` +
-          `Где смотреть:\n` +
-          `[Twitch](https://twitch.tv/relka_art) ` +
-          `[VK Play](https://live.vkvideo.ru/relka_art) ` +
-          `[Trovo](https://trovo.live/s/relka_art)`;
-
-        this.telegramService.sendNotification(message);
-
-        await this.storage.save(channel, {
-          status: "Live",
-          tgNotify: true,
-          lastChecked: new Date(),
-        });
+        try {
+          await this.telegramService
+            .createStreamMessage(streamInfo)
+            .sendNotification();
+          this.storageService.updateLastDate();
+          this.logger.log(`Stream status updated:`);
+        } catch (error) {
+          this.logger.error("Failed to send Telegram notification", error);
+          return;
+        }
       }
 
-      this.logger.log(`Stream status updated:`);
+      this.logger.log(`Stream status not updated:`);
     } catch (error) {
       this.logger.error("Failed to check stream status", error);
       throw error;

@@ -6,8 +6,8 @@ import { TwitchService } from "../modules/stream/twitch/twitch.service";
 import { TelegramService } from "../modules/telegram/telegram.service";
 import { StorageService } from "../modules/storage/storage.service";
 import { Storage } from "./storage";
-import { StreamMonitorTask } from "../modules/stream/streamMonitor";
-import { OAuth2Service } from "./oauth2/oauth2.service";
+import { StreamMonitor } from "../modules/stream/streamMonitor";
+import { OAuth2 } from "./oauth2";
 
 const container = new Container();
 
@@ -18,7 +18,7 @@ container.bind(Scheduler).toSelf().inSingletonScope();
 container.bind(TwitchService).toSelf().inSingletonScope();
 container.bind(TelegramService).toSelf().inSingletonScope();
 container.bind(StorageService).toSelf().inSingletonScope();
-container.bind(StreamMonitorTask).toSelf().inSingletonScope();
-container.bind(OAuth2Service).toSelf().inSingletonScope();
+container.bind(StreamMonitor).toSelf().inSingletonScope();
+container.bind(OAuth2).toSelf().inSingletonScope();
 
 export { container };
