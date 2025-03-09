@@ -1,13 +1,13 @@
 import { injectable, inject } from "inversify";
 import { Logger } from "../../core/logger";
-import { TwitchService } from "./twitch/twitch.service";
 import { TelegramService } from "../telegram/telegram.service";
 import { StorageService } from "../storage/storage.service";
 import { config } from "../../core/config";
-import { StreamsUserResponse } from "./twitch/twitch.interface";
+import { StreamsUserResponse } from "../twitch/twitch.interface";
+import { TwitchService } from "../twitch/twitch.service";
 
 @injectable()
-export class StreamMonitor {
+export class MonitorService {
   constructor(
     @inject(Logger) private logger: Logger,
     @inject(TwitchService) private twitchService: TwitchService,
@@ -51,7 +51,7 @@ export class StreamMonitor {
       this.logger.log(`Stream status not updated:`);
     } catch (error) {
       this.logger.error("Failed to check stream status", error);
-      throw error;
+      // throw error;
     }
   }
 }

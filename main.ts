@@ -1,18 +1,15 @@
 import "reflect-metadata";
 import { container } from "./src/core/di";
 import { Scheduler } from "./src/core/sheduler";
-import { StreamMonitor } from "./src/modules/stream/streamMonitor";
+import { MonitorService } from "./src/modules/monitor/monitor.service";
 import { Logger } from "./src/core/logger";
 import { config } from "./src/core/config";
 
 async function bootstrap() {
   const scheduler = container.get(Scheduler);
-  const monitor = container.get(StreamMonitor);
+  const monitor = container.get(MonitorService);
 
-  scheduler.schedule(
-    () => monitor.execute(config.twitch.channel),
-    "* * * * * *"
-  );
+  scheduler.schedule(() => monitor.execute(config.twitch.channel), "* * * * *");
 
   process.on("SIGINT", () => {
     scheduler.shutdown();

@@ -1,11 +1,13 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import { config } from "./config";
+import { Logger } from "./logger";
 
 @injectable()
 export class OAuth2 {
   private accessToken: string;
 
   constructor(
+    @inject(Logger) private logger: Logger,
     private clientId: string = config.twitch.clientId,
     private clientSecret: string = config.twitch.clientSecret,
     private accessTokenURL: string = config.twitch.accessToken
@@ -43,7 +45,7 @@ export class OAuth2 {
         this.accessToken = data.access_token;
       }
     } catch (error) {
-      console.error("Ошибка при получении токена", error);
+      this.logger.error("Ошибка при получении токена", error);
     }
   }
 }

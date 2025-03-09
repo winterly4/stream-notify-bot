@@ -1,5 +1,6 @@
 import { inject, injectable } from "inversify";
 import { Storage } from "../../core/storage";
+import { config } from "../../core/config";
 
 export type StreamState = {
   lastChecked: number | null;
@@ -8,7 +9,7 @@ export type StreamState = {
 @injectable()
 export class StorageService {
   private cacheJson: StreamState = null;
-  private channel: string = null;
+  private channel: string = config.twitch.channel;
 
   constructor(@inject(Storage) private storage: Storage) {}
 

@@ -1,10 +1,14 @@
 import { inject, injectable } from "inversify";
+import { HttpClient } from "../../core/http.client";
 import { ITwitchService, StreamsUserResponse } from "./twitch.interface";
-import { HttpClient } from "../../../core/http.client";
+import { Logger } from "../../core/logger";
 
 @injectable()
 export class TwitchService implements ITwitchService {
-  constructor(@inject(HttpClient) private httpClient: HttpClient) {}
+  constructor(
+    @inject(HttpClient) private httpClient: HttpClient,
+    @inject(Logger) private logger: Logger
+  ) {}
 
   async getStreamInfoByChannel(channel: string): Promise<StreamsUserResponse> {
     try {
@@ -13,7 +17,7 @@ export class TwitchService implements ITwitchService {
       );
       return result;
     } catch (error) {
-      console.error("Ошибка при отправке API запроса", error);
+      this.logger.error("Ошибка при отправке API запроса", error);
       throw new Error("Failed to fetch stream info");
     }
   }
@@ -25,7 +29,7 @@ export class TwitchService implements ITwitchService {
       );
       return result;
     } catch (error) {
-      console.error("Ошибка при отправке API запроса", error);
+      this.logger.error("Ошибка при отправке API запроса", error);
       throw new Error("Failed to fetch stream info");
     }
   }

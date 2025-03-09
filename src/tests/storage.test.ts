@@ -1,18 +1,20 @@
-// import { Storage } from "../core/storage";
-// import { StorageService } from "../modules/storage/storage.service";
+import { Logger } from "../core/logger";
+import { Storage } from "../core/storage";
+import { StorageService } from "../modules/storage/storage.service";
 
-// const storage = new StorageService(new Storage());
+const storageService = new StorageService(new Storage(new Logger()));
+const logger = new Logger();
 
-// async function testStorage() {
-//   try {
-//     // await storage.update("test", { last: Date.now() });
-//     await storage.update("test", { lastChecked: new Date() });
+async function testStorage() {
+  try {
+    // await storageService.updateLastDate();
 
-//     const result = await storage.get("test");
-//     console.log("Результат:", result);
-//   } catch (error) {
-//     console.error("Ошибка при работе с хранилищем:", error);
-//   }
-// }
+    const result = await storageService.getLastDate();
 
-// testStorage();
+    logger.log("Результат:", result);
+  } catch (error) {
+    logger.error("Ошибка при работе с хранилищем:", error);
+  }
+}
+
+testStorage();

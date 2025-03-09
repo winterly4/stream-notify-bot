@@ -1,12 +1,16 @@
 import fs from "fs/promises";
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import path from "path";
+import { Logger } from "./logger";
 
 @injectable()
 export class Storage<T = any> {
   private readonly filePath: string;
 
-  constructor(fileName: string = "stream_state.json") {
+  constructor(
+    @inject(Logger) private logger: Logger,
+    fileName: string = "stream_state.json"
+  ) {
     this.filePath = path.resolve(process.cwd(), fileName);
   }
 
@@ -18,7 +22,7 @@ export class Storage<T = any> {
         currentData = JSON.parse(fileContent);
       } catch (error) {
         if (error.code === "ENOENT") {
-          console.log("Файл не найден, создаём новый...");
+          this.logger.error("Файл не найден, создаём новый...", error);
         } else {
           throw error;
         }
@@ -31,10 +35,10 @@ export class Storage<T = any> {
         JSON.stringify(currentData, null, 2),
         "utf-8"
       );
-      console.log(`Состояние для канала ${key} успешно сохранено.`);
+      this.logger.log(`Состояние для канала ${key} успешно сохранено.`);
     } catch (error) {
-      console.error("Ошибка при сохранении состояния:", error);
-      throw error;
+      this.logger.error("Ошибка при сохранении состояния:", error);
+      // throw error;
     }
   }
 
@@ -46,10 +50,10 @@ export class Storage<T = any> {
       return data[key] || null;
     } catch (error) {
       if (error.code === "ENOENT") {
-        console.log("Файл не найден, возвращаем null.");
+        this.logger.error("Файл не найден, возвращаем null.", error);
       }
-      console.error("Ошибка при загрузке состояния:", error);
-      throw error;
+      this.logger.error("Ошибка при загрузке состояния:", error);
+      // throw error;
     }
   }
 }
