@@ -28,9 +28,17 @@ export class StorageService {
   public async getChannelStorageData(): Promise<StreamState | null> {
     if (!this.cacheJson) {
       this.logger.log("Кеш не найден, получаем значение из файла");
-      this.cacheJson = await this.load();
+      const result = (this.cacheJson = await this.load());
+      if (!result) {
+        this.initChannelStorageDate();
+      }
     }
     return this.cacheJson;
+  }
+
+  private async initChannelStorageDate() {
+    this.cacheJson = { lastChecked: 0 };
+    this.save(this.cacheJson);
   }
 
   public async updateChannelStorageData(): Promise<void> {
