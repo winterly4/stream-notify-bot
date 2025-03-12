@@ -16,13 +16,26 @@ export class MonitorService {
   ) {}
 
   async execute(channel: string) {
-    this.storageService.setChannel(channel);
     try {
-      const lastDate = await this.storageService.getLastDate();
+      const channelStorage = await this.storageService.getChannelStorageData();
 
-      if (Date.now() - lastDate.lastChecked < config.app.streamDelay) {
+      if (
+        channelStorage &&
+        Date.now() - channelStorage.lastChecked < config.app.streamDelay
+      ) {
+        this.logger.log(
+          `Дата отправки сообщения: ${new Date(
+            channelStorage.lastChecked
+          ).toLocaleString()}` +
+            ` Текущая дата: ${new Date().toLocaleString()}` +
+            ` Отправка возобновится в ${new Date(
+              channelStorage.lastChecked + config.app.streamDelay
+            ).toLocaleString()}`
+        );
         return;
       }
+
+      this.logger.log("Запрашиваем состояние стрима");
 
       let result: StreamsUserResponse;
 
@@ -40,18 +53,16 @@ export class MonitorService {
           await this.telegramService
             .createStreamMessage(streamInfo)
             .sendNotification();
-          this.storageService.updateLastDate();
+          this.storageService.updateChannelStorageData();
           this.logger.log(`Stream status updated:`);
         } catch (error) {
           this.logger.error("Failed to send Telegram notification", error);
           return;
         }
       }
-
-      this.logger.log(`Stream status not updated:`);
     } catch (error) {
       this.logger.error("Failed to check stream status", error);
-      // throw error;
+      throw error;
     }
   }
 }

@@ -1,6 +1,7 @@
 import { inject, injectable } from "inversify";
 import { Storage } from "../../core/storage";
 import { config } from "../../core/config";
+import { Logger } from "../../core/logger";
 
 export type StreamState = {
   lastChecked: number | null;
@@ -11,29 +12,33 @@ export class StorageService {
   private cacheJson: StreamState = null;
   private channel: string = config.twitch.channel;
 
-  constructor(@inject(Storage) private storage: Storage) {}
+  constructor(
+    @inject(Storage) private storage: Storage,
+    @inject(Logger) private logger: Logger
+  ) {}
 
-  private async update(value: StreamState): Promise<void> {
+  private async save(value: StreamState): Promise<void> {
     await this.storage.save(this.channel, value);
   }
 
-  private async get(): Promise<StreamState> {
+  private async load(): Promise<StreamState> {
     return await this.storage.load(this.channel);
   }
 
-  public async getLastDate(): Promise<StreamState> {
+  public async getChannelStorageData(): Promise<StreamState | null> {
     if (!this.cacheJson) {
-      this.cacheJson = await this.get();
+      this.logger.log("Кеш не найден, получаем значение из файла");
+      this.cacheJson = await this.load();
     }
     return this.cacheJson;
   }
 
-  public async updateLastDate(): Promise<void> {
+  public async updateChannelStorageData(): Promise<void> {
     this.cacheJson = { lastChecked: Date.now() };
-    this.update(this.cacheJson);
+    this.save(this.cacheJson);
   }
 
-  public setChannel(channel: string) {
-    this.channel = channel;
-  }
+  // public setChannel(channel: string) {
+  //   this.channel = channel;
+  // }
 }

@@ -6,6 +6,11 @@ import { Logger } from "./src/core/logger";
 import { config } from "./src/core/config";
 
 async function bootstrap() {
+  console.log(
+    `Скрипт запущен в режиме ${config.mode}\n` +
+      `Следим за стримером: ${config.twitch.channel}`
+  );
+
   const scheduler = container.get(Scheduler);
   const monitor = container.get(MonitorService);
 

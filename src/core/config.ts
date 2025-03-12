@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
 import path from "path";
 
-const env = process.env.NODE_ENV || "development";
+// const env = process.env.NODE_ENV || "development";
+const env = "development";
 
 const envPath = path.resolve(process.cwd(), `.env.${env}.local`);
 dotenv.config({ path: envPath });
@@ -21,6 +22,7 @@ export const config = {
   },
   app: {
     streamDelay: parseInt(process.env.STREAM_DELAY) * 60 * 60 * 1000,
+    storageFileName: process.env.STORAGE_FILE_NAME,
   },
 };
 
