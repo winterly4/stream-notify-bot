@@ -1,3 +1,4 @@
+mkdir -p ~/stream-notify-bot
 cd ~/stream-notify-bot
 docker build -t stream-notify-bot-image .
 
