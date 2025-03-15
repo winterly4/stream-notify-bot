@@ -35,11 +35,9 @@ export class TelegramService {
         } catch (error) {
           this.logger.error("Ошибка при отправке сообщения в Telegram:", error);
           if (error.code === 403) {
-            // Если ошибка фатальная (например, бот заблокирован), прекращаем попытки
             bail(error);
             return;
           }
-          // В противном случае пробуем ещё раз
           throw error;
         }
       },

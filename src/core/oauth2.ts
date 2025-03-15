@@ -24,6 +24,7 @@ export class OAuth2 {
   }
 
   async refreshToken() {
+    this.logger.log("Обновляю токен авторизации");
     const params = new URLSearchParams({
       client_id: this.clientId,
       client_secret: this.clientSecret,
@@ -43,6 +44,7 @@ export class OAuth2 {
 
       if (data !== null) {
         this.accessToken = data.access_token;
+        this.logger.log("Токен успешно обновлен");
       }
     } catch (error) {
       this.logger.error("Ошибка при получении токена", error);

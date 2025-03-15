@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 // const env = process.env.NODE_ENV || "development";
-const env = "development";
+const env = "production";
 
 const envPath = path.resolve(process.cwd(), `.env.${env}.local`);
 dotenv.config({ path: envPath });

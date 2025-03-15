@@ -3,6 +3,7 @@ import retry from "async-retry";
 import { OAuth2 } from "./oauth2";
 import { Logger } from "./logger";
 import { config } from "./config";
+import { error } from "console";
 
 @injectable()
 export class HttpClient {
@@ -23,6 +24,7 @@ export class HttpClient {
         });
 
         if (response.status === 403) {
+          this.logger.log("Истек срок действия токена авторизации");
           this.oauth.refreshToken();
           throw new Error("Unauthorized");
         }
