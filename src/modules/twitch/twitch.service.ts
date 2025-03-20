@@ -1,7 +1,12 @@
 import { inject, injectable } from "inversify";
 import { HttpClient } from "../../core/http.client";
-import { ITwitchService, StreamsUserResponse } from "./twitch.interface";
+import { StreamsUserResponse } from "./dto";
 import { Logger } from "../../core/logger";
+
+export interface ITwitchService {
+  getStreamInfoByChannel(channel: string): Promise<StreamsUserResponse | null>;
+  getStreamLiveChannel(): Promise<StreamsUserResponse | null>;
+}
 
 @injectable()
 export class TwitchService implements ITwitchService {

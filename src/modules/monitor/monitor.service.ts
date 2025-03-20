@@ -3,7 +3,7 @@ import { Logger } from "../../core/logger";
 import { TelegramService } from "../telegram/telegram.service";
 import { StorageService } from "../storage/storage.service";
 import { config } from "../../core/config";
-import { StreamsUserResponse } from "../twitch/twitch.interface";
+import { StreamsUserResponse } from "../twitch/dto";
 import { TwitchService } from "../twitch/twitch.service";
 
 @injectable()

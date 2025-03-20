@@ -3,7 +3,7 @@ import TelegramBot from "node-telegram-bot-api";
 import { config } from "../../core/config";
 import retry from "async-retry";
 import { Logger } from "../../core/logger";
-import { StreamInfo } from "../twitch/twitch.interface";
+import { StreamInfo } from "../twitch/dto";
 
 @injectable()
 export class TelegramService {
